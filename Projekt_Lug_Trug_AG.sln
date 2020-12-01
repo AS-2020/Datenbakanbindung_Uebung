@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projekt_Lug_Trug_AG", "Projekt_Lug_Trug_AG\Projekt_Lug_Trug_AG.csproj", "{2FD3B51E-EC07-427F-BCF0-2B98E4187DFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FD3B51E-EC07-427F-BCF0-2B98E4187DFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FD3B51E-EC07-427F-BCF0-2B98E4187DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FD3B51E-EC07-427F-BCF0-2B98E4187DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FD3B51E-EC07-427F-BCF0-2B98E4187DFC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C8AD128-BEED-420B-B334-6A9C87DB4DE6}
+	EndGlobalSection
+EndGlobal
