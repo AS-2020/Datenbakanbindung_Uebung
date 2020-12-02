@@ -53,7 +53,6 @@ namespace Projekt_Lug_Trug_AG.Models
             {
                 ser.Serialize(stream, Kunden);
             }
-            //stream.Close();
         }
         public void Load()
         {

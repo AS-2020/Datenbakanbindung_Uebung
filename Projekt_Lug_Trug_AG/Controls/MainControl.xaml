@@ -40,35 +40,44 @@
             <TextBlock TextAlignment="Center" Text="Ansprechpartner"     Grid.Row="4"/>
             <TextBlock TextAlignment="Center" Text="Telefonnummer"     Grid.Row="5"/>
             <TextBlock TextAlignment="Center" Text="Aktiv"     Grid.Row="6"/>
-            <TextBlock Text=""     Grid.Row="7"/>
+            <TextBlock Text="" Grid.Row="7"/>
             <TextBox TextAlignment="Center" Text="{Binding KundenNummer}" Grid.Row="1" Grid.Column="1"/>
             <TextBox TextAlignment="Center" Text="{Binding NameFirma}" Grid.Row="2" Grid.Column="1"/>
             <TextBox TextAlignment="Center" Text="{Binding AdresseKunde}" Grid.Row="3" Grid.Column="1"/>
             <TextBox TextAlignment="Center" Text="{Binding Ansprechpartner}" Grid.Row="4" Grid.Column="1"/>
             <TextBox TextAlignment="Center" Text="{Binding Telefonnummer}" Grid.Row="5" Grid.Column="1"/>
-            <ComboBox SelectedItem="{Binding Aktiv}" ItemsSource="{Binding Zustaende}"
-                      Grid.Row="6" Grid.Column="1"></ComboBox>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"  
-                        Grid.Row="8" Grid.ColumnSpan="2">
+            <ComboBox SelectedItem="{Binding Aktiv}" ItemsSource="{Binding Zustaende}" Grid.Row="6" Grid.Column="1"></ComboBox>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="2">
                 <Button Content="Speichern" Width="100" Margin="5" Command="{Binding SaveCommand}" />
                 <Button Content="Verwerfen" Width="100" Margin="5" Command="{Binding CancelCommand}" />
-                <Button Content="Kunde ändern" Width="100" Margin="5" Command="{Binding ChangeCommand}" />
+                <Button Content="Kunde ändern" Width="100" Margin="5" Command="{Binding ChangeCommand}"/>
                 <Button Content="Beenden" Width="100" Margin="5" Command="{Binding ExitCommand}" />
             </StackPanel>
         </Grid>
         <Rectangle Fill="Gray" Grid.Column="1" />
-        <TextBlock Grid.Column="2" TextAlignment="Center" Text="Kunden" Padding="10" FontWeight="Bold" VerticalAlignment="Top" FontSize="32"/>
-        <ListView Grid.Column="2" ItemsSource="{Binding Kunden}" Margin="10,50,10,50" Name="KundenAngezeigt" >
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Kundennummer" DisplayMemberBinding="{Binding KundenNummer}" Width="100"/>
-                    <GridViewColumn Header="Firmenname" DisplayMemberBinding="{Binding NameFirma}" Width="100"/>
-                    <GridViewColumn Header="Anschrift" DisplayMemberBinding="{Binding AdresseKunde}" Width="200"/>
-                    <GridViewColumn Header="Ansprechpartner" DisplayMemberBinding="{Binding Ansprechpartner}" Width="100"/>
-                    <GridViewColumn Header="Telefonnummer" DisplayMemberBinding="{Binding Telefonnummer}" Width="100"/>
-                    <GridViewColumn Header="Zustand" DisplayMemberBinding="{Binding Aktiv}" Width="100"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Center" Text="Kunden" Padding="10" FontWeight="Bold" VerticalAlignment="Top" FontSize="32"/>
+            <ListView Grid.Column="2" ItemsSource="{Binding Kunden}" Margin="10,50,10,0" Name="KundenListe" SelectionChanged="ListView_SelectionChanged">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Kundennummer" DisplayMemberBinding="{Binding KundenNummer}" Width="100"/>
+                        <GridViewColumn Header="Firmenname" DisplayMemberBinding="{Binding NameFirma}" Width="100"/>
+                        <GridViewColumn Header="Anschrift" DisplayMemberBinding="{Binding AdresseKunde}" Width="200"/>
+                        <GridViewColumn Header="Ansprechpartner" DisplayMemberBinding="{Binding Ansprechpartner}" Width="100"/>
+                        <GridViewColumn Header="Telefonnummer" DisplayMemberBinding="{Binding Telefonnummer}" Width="100"/>
+                        <GridViewColumn Header="Zustand" DisplayMemberBinding="{Binding Aktiv}" Width="100"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Margin="15,15,5,15">
+                <Button  Content="Kunde auswählen" Width="100" Margin="5" Command="{Binding SelectCommand}"/>
+                <Button  Content="Suchen" Width="100" Margin="5" Command="{Binding SearchCommand}"/>
+                <TextBox TextAlignment="Left" Padding="10" VerticalAlignment="Top" Width="100" Text="{Binding KundenSuchen}"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

@@ -9,6 +9,7 @@ using Projekt_Lug_Trug_AG.Helper;
 using Projekt_Lug_Trug_AG.Models;
 using Projekt_Lug_Trug_AG.Controls;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Projekt_Lug_Trug_AG.ViewModels
 {
@@ -18,15 +19,29 @@ namespace Projekt_Lug_Trug_AG.ViewModels
 
         public ObservableCollection<string> Zustaende { get; set; }
         private ObservableCollection<Kunde> kunden;
-        public ObservableCollection<Kunde> Kunden {
+        public ObservableCollection<Kunde> Kunden
+        {
             get { return kunden; }
-            set 
+            set
             {
                 kunden = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Kunden"));
-            } 
+            }
         }
+        public ICollectionView KundenListe { get; set; }
+        public List<Kunde> SelectedKunde { get; set; }
 
+
+        private string _kundenSuchen;
+        public string KundenSuchen
+        {
+            get { return _kundenSuchen; }
+            set
+            {
+                _kundenSuchen = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KundenSuchen"));
+            }
+        }
 
         private string _aktion;
         public string Aktion
@@ -109,8 +124,10 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         public RelayCommand CancelCommand { get; set; }
         public RelayCommand ExitCommand { get; set; }
         public RelayCommand ChangeCommand { get; set; }
+        public RelayCommand SelectCommand { get; set; }
+        public RelayCommand SearchCommand { get; set; }
 
-        public void Cancel(object o)
+    public void Cancel(object o)
         {
             KundenNummer = 0;
             NameFirma = "";
@@ -130,6 +147,26 @@ namespace Projekt_Lug_Trug_AG.ViewModels
             Aktion = "Neuer Kunde";
         }
 
+        public void SelectKunde(object o)
+        {
+            try
+            {
+                Kunde k = SelectedKunde.LastOrDefault<Kunde>();
+                KundenNummer = k.KundenNummer;
+                NameFirma = k.NameFirma;
+                AdresseKunde = k.AdresseKunde;
+                Ansprechpartner = k.Ansprechpartner;
+                Telefonnummer = k.Telefonnummer;
+                Aktiv = k.Aktiv;
+
+            }
+            catch (System.ArgumentNullException)
+            {
+
+                MessageBox.Show("Kein Kunde gewählt");
+            }
+        }
+
         public MainVM()
         {
             Kundenverwaltung.Instance.Load();
@@ -141,7 +178,7 @@ namespace Projekt_Lug_Trug_AG.ViewModels
             SaveCommand = new RelayCommand((o) =>
             {
                 Kunde vorhanden = Kundenverwaltung.Instance.GetKunden().Find(k => k.KundenNummer == KundenNummer);
-                if (vorhanden == null)
+                if (vorhanden == null && NameFirma != null && KundenNummer > 0)
                 {
                     Kunde p = new Kunde()
                     {
@@ -156,9 +193,17 @@ namespace Projekt_Lug_Trug_AG.ViewModels
                     Kunden.Add(p);
                     Kundenverwaltung.Instance.Save();
                 }
-                else
+                else if (vorhanden != null)
                 {
                     MessageBox.Show("Kundennummer existert bereits");
+                }
+                else if (NameFirma == null)
+                {
+                    MessageBox.Show("Es muss ein Firmenname eingegeben werden");
+                }
+                else if (KundenNummer <= 0)
+                {
+                    MessageBox.Show("Kundennummer muss größer als 0 sein");
                 }
             });
 
@@ -166,10 +211,17 @@ namespace Projekt_Lug_Trug_AG.ViewModels
 
             ExitCommand = new RelayCommand(Exit);
 
+            SearchCommand = new RelayCommand((o) =>
+            {
+                Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().FindAll(k => k.NameFirma.ToLower().Contains(KundenSuchen.ToLower())));
+            });
+
+            SelectCommand = new RelayCommand(SelectKunde);
+
             ChangeCommand = new RelayCommand((o) =>
             {
                 Kunde vorhanden = Kundenverwaltung.Instance.GetKunden().Find(k => k.KundenNummer == KundenNummer);
-                if (vorhanden != null)
+                if (NameFirma != null && KundenNummer > 0)
                 {
                     Kundenverwaltung.Instance.RemoveKunde(vorhanden);
 
@@ -187,10 +239,15 @@ namespace Projekt_Lug_Trug_AG.ViewModels
                     Kundenverwaltung.Instance.Save();
                     Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden());
                 }
+                else if (NameFirma == null)
+                {
+                    MessageBox.Show("Es muss ein Firmenname eingegeben werden");
+                }
+                else if (KundenNummer <= 0)
+                {
+                    MessageBox.Show("Kundennummer muss größer als 0 sein");
+                }
             });
-
-
         }
-
     }
 }

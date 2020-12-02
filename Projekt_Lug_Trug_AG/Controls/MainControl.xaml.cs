@@ -1,4 +1,5 @@
-﻿using Projekt_Lug_Trug_AG.ViewModels;
+﻿using Projekt_Lug_Trug_AG.Models;
+using Projekt_Lug_Trug_AG.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,13 @@ namespace Projekt_Lug_Trug_AG.Controls
         public MainControl()
         {
             DataContext = new MainVM();
-            InitializeComponent();
+            InitializeComponent();            
+
+        }
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var viewmodel = (MainVM)DataContext;
+            viewmodel.SelectedKunde = KundenListe.SelectedItems.Cast<Kunde>().ToList();
         }
     }
 }

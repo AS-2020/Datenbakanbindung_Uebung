@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Projekt_Lug_Trug_AG.Controls"
         mc:Ignorable="d"
-        Title="Kundenverwaltung" Height="450" Width="1210"  MinHeight="450" MinWidth="1210" >
+        Title="Kundenverwaltung" Height="450" Width="1240"  MinHeight="450" MinWidth="1240" >
     <Grid>
         <local:MainControl></local:MainControl>
     </Grid>
