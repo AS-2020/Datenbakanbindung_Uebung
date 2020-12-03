@@ -31,8 +31,19 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         public ICollectionView KundenListe { get; set; }
         public List<Kunde> SelectedKunde { get; set; }
 
+        private string _sortieren;
+        public string Sortieren
+        {
+            get { return _sortieren; }
+            set
+            {
+                _sortieren = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Sortieren"));
+            }
+        }
 
-        private string _kundenSuchen;
+
+        private string _kundenSuchen = "";
         public string KundenSuchen
         {
             get { return _kundenSuchen; }
@@ -126,8 +137,9 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         public RelayCommand ChangeCommand { get; set; }
         public RelayCommand SelectCommand { get; set; }
         public RelayCommand SearchCommand { get; set; }
+        public RelayCommand SortCommand { get; set; }
 
-    public void Cancel(object o)
+        public void Cancel(object o)
         {
             KundenNummer = 0;
             NameFirma = "";
@@ -146,7 +158,10 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         {
             Aktion = "Neuer Kunde";
         }
-
+        public void SortNr(object o)
+        {
+            Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.KundenNummer));
+        }
         public void SelectKunde(object o)
         {
             try
@@ -171,9 +186,7 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         {
             Kundenverwaltung.Instance.Load();
             Zustaende = new ObservableCollection<string>() { "Aktiv", "Inaktiv", "" };
-            Kunden = new ObservableCollection<Kunde>(
-                Kundenverwaltung.Instance.GetKunden()
-                );
+            Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.KundenNummer));
 
             SaveCommand = new RelayCommand((o) =>
             {
@@ -213,7 +226,21 @@ namespace Projekt_Lug_Trug_AG.ViewModels
 
             SearchCommand = new RelayCommand((o) =>
             {
-                Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().FindAll(k => k.NameFirma.ToLower().Contains(KundenSuchen.ToLower())));
+                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().FindAll(k => k.NameFirma.ToLower().Contains(KundenSuchen.ToLower())));
+            });
+
+            SortCommand = new RelayCommand((o) =>
+            {
+                if (Sortieren == "Zustand sortieren")
+                {
+                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.Aktiv));
+                    Sortieren = "Nummer sortieren";
+                }
+                else if (Sortieren == "Nummer sortieren")
+                {
+                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.KundenNummer));
+                    Sortieren = "Zustand sortieren";
+                }
             });
 
             SelectCommand = new RelayCommand(SelectKunde);
@@ -221,31 +248,39 @@ namespace Projekt_Lug_Trug_AG.ViewModels
             ChangeCommand = new RelayCommand((o) =>
             {
                 Kunde vorhanden = Kundenverwaltung.Instance.GetKunden().Find(k => k.KundenNummer == KundenNummer);
-                if (NameFirma != null && KundenNummer > 0)
-                {
-                    Kundenverwaltung.Instance.RemoveKunde(vorhanden);
 
-                    Kunde p = new Kunde()
+                if (vorhanden == null)
+                {
+                    MessageBox.Show("Die Kundennummer existiert noch nicht!");
+                }
+                else
+                {
+                    if (NameFirma != null && KundenNummer > 0)
                     {
-                        KundenNummer = KundenNummer,
-                        NameFirma = NameFirma,
-                        AdresseKunde = AdresseKunde,
-                        Ansprechpartner = Ansprechpartner,
-                        Telefonnummer = Telefonnummer,
-                        Aktiv = Aktiv
-                    };
-                    Kundenverwaltung.Instance.AddKunde(p);
-                    Kunden.Add(p);
-                    Kundenverwaltung.Instance.Save();
-                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden());
-                }
-                else if (NameFirma == null)
-                {
-                    MessageBox.Show("Es muss ein Firmenname eingegeben werden");
-                }
-                else if (KundenNummer <= 0)
-                {
-                    MessageBox.Show("Kundennummer muss größer als 0 sein");
+                        Kundenverwaltung.Instance.RemoveKunde(vorhanden);
+
+                        Kunde p = new Kunde()
+                        {
+                            KundenNummer = KundenNummer,
+                            NameFirma = NameFirma,
+                            AdresseKunde = AdresseKunde,
+                            Ansprechpartner = Ansprechpartner,
+                            Telefonnummer = Telefonnummer,
+                            Aktiv = Aktiv
+                        };
+                        Kundenverwaltung.Instance.AddKunde(p);
+                        Kunden.Add(p);
+                        Kundenverwaltung.Instance.Save();
+                        Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.KundenNummer));
+                    }
+                    else if (NameFirma == null)
+                    {
+                        MessageBox.Show("Es muss ein Firmenname eingegeben werden");
+                    }
+                    else if (KundenNummer <= 0)
+                    {
+                        MessageBox.Show("Kundennummer muss größer als 0 sein");
+                    }
                 }
             });
         }

@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200">
     <UserControl.DataContext>
-        <vm:MainVM Aktion="Kundeneingabe"></vm:MainVM>
+        <vm:MainVM Aktion="Kundeneingabe" Sortieren="Zustand sortieren"></vm:MainVM>
     </UserControl.DataContext>
     <Grid >
         <Grid.ColumnDefinitions>
@@ -66,14 +66,15 @@
                     <GridView>
                         <GridViewColumn Header="Kundennummer" DisplayMemberBinding="{Binding KundenNummer}" Width="100"/>
                         <GridViewColumn Header="Firmenname" DisplayMemberBinding="{Binding NameFirma}" Width="100"/>
-                        <GridViewColumn Header="Anschrift" DisplayMemberBinding="{Binding AdresseKunde}" Width="200"/>
+                        <GridViewColumn Header="Anschrift" DisplayMemberBinding="{Binding AdresseKunde}" Width="220"/>
                         <GridViewColumn Header="Ansprechpartner" DisplayMemberBinding="{Binding Ansprechpartner}" Width="100"/>
                         <GridViewColumn Header="Telefonnummer" DisplayMemberBinding="{Binding Telefonnummer}" Width="100"/>
-                        <GridViewColumn Header="Zustand" DisplayMemberBinding="{Binding Aktiv}" Width="100"/>
+                        <GridViewColumn Header="Zustand" DisplayMemberBinding="{Binding Aktiv}" Width="80"/>
                     </GridView>
                 </ListView.View>
             </ListView>
             <StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Margin="15,15,5,15">
+                <Button  Content="{Binding Sortieren}" Width="100" Margin="5" Command="{Binding SortCommand}"/>
                 <Button  Content="Kunde auswählen" Width="100" Margin="5" Command="{Binding SelectCommand}"/>
                 <Button  Content="Suchen" Width="100" Margin="5" Command="{Binding SearchCommand}"/>
                 <TextBox TextAlignment="Left" Padding="10" VerticalAlignment="Top" Width="100" Text="{Binding KundenSuchen}"/>
