@@ -58,6 +58,7 @@
     <Compile Include="Controls\MainControl.xaml.cs">
       <DependentUpon>MainControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Models\Adresse.cs" />
     <Compile Include="Models\Kunde.cs" />
     <Compile Include="Models\Kundenverwaltung.cs" />

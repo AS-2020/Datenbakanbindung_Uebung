@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Projekt_Lug_Trug_AG.Controls"
-             xmlns:vm="clr-namespace:Projekt_Lug_Trug_AG.ViewModels"
+             xmlns:vm="clr-namespace:Projekt_Lug_Trug_AG.ViewModels" xmlns:converter="clr-namespace:Projekt_Lug_Trug_AG.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200">
     <UserControl.DataContext>
-        <vm:MainVM Aktion="Kundeneingabe" Sortieren="Zustand sortieren"></vm:MainVM>
+        <vm:MainVM Aktion="Kundeneingabe" Sortieren="Zustand sortieren" AendernButton="false" KundenNummerTextBox="false"></vm:MainVM>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </UserControl.Resources>
     <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1,15*"></ColumnDefinition>
@@ -34,23 +36,23 @@
             <Viewbox Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
                 <TextBlock Text="{Binding Aktion}" FontWeight="Bold" FontSize="32"/>
             </Viewbox>
-            <TextBlock TextAlignment="Center" Text="Kundennummer" Grid.Row="1"/>
-            <TextBlock TextAlignment="Center" Text="Name der Firma" Grid.Row="2"/>
-            <TextBlock TextAlignment="Center" Text="Anschrift" Grid.Row="3"/>
-            <TextBlock TextAlignment="Center" Text="Ansprechpartner"     Grid.Row="4"/>
-            <TextBlock TextAlignment="Center" Text="Telefonnummer"     Grid.Row="5"/>
-            <TextBlock TextAlignment="Center" Text="Aktiv"     Grid.Row="6"/>
+            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Kundennummer" Grid.Row="1"/>
+            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Name der Firma" Grid.Row="2"/>
+            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Anschrift" Grid.Row="3"/>
+            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Ansprechpartner" Grid.Row="4"/>
+            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Telefonnummer" Grid.Row="5"/>
+            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Aktiv" Grid.Row="6"/>
             <TextBlock Text="" Grid.Row="7"/>
-            <TextBox TextAlignment="Center" Text="{Binding KundenNummer}" Grid.Row="1" Grid.Column="1"/>
-            <TextBox TextAlignment="Center" Text="{Binding NameFirma}" Grid.Row="2" Grid.Column="1"/>
-            <TextBox TextAlignment="Center" Text="{Binding AdresseKunde}" Grid.Row="3" Grid.Column="1"/>
-            <TextBox TextAlignment="Center" Text="{Binding Ansprechpartner}" Grid.Row="4" Grid.Column="1"/>
-            <TextBox TextAlignment="Center" Text="{Binding Telefonnummer}" Grid.Row="5" Grid.Column="1"/>
-            <ComboBox SelectedItem="{Binding Aktiv}" ItemsSource="{Binding Zustaende}" Grid.Row="6" Grid.Column="1"></ComboBox>
+            <TextBox Text="{Binding KundenNummer}" Grid.Row="1" Grid.Column="1" IsReadOnly="{Binding KundenNummerTextBox}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <TextBox Text="{Binding NameFirma}" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <TextBox Text="{Binding AdresseKunde}" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <TextBox Text="{Binding Ansprechpartner}" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <TextBox Text="{Binding Telefonnummer}" Grid.Row="5" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <ComboBox SelectedItem="{Binding Aktiv}" ItemsSource="{Binding Zustaende}" Grid.Row="6" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></ComboBox>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="2">
-                <Button Content="Speichern" Width="100" Margin="5" Command="{Binding SaveCommand}" />
+                <Button Content="Speichern" Width="100" Margin="5" Command="{Binding SaveCommand}" IsEnabled="{Binding AendernButton, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
                 <Button Content="Verwerfen" Width="100" Margin="5" Command="{Binding CancelCommand}" />
-                <Button Content="Kunde ändern" Width="100" Margin="5" Command="{Binding ChangeCommand}"/>
+                <Button Content="Kunde ändern" Width="100" Margin="5" Command="{Binding ChangeCommand}" IsEnabled="{Binding AendernButton}"/>
                 <Button Content="Beenden" Width="100" Margin="5" Command="{Binding ExitCommand}" />
             </StackPanel>
         </Grid>

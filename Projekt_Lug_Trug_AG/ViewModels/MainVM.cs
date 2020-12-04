@@ -10,6 +10,7 @@ using Projekt_Lug_Trug_AG.Models;
 using Projekt_Lug_Trug_AG.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using Projekt_Lug_Trug_AG.Converter;
 
 namespace Projekt_Lug_Trug_AG.ViewModels
 {
@@ -30,7 +31,17 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         }
         public ICollectionView KundenListe { get; set; }
         public List<Kunde> SelectedKunde { get; set; }
-
+        
+        private bool _kundenNummerTextBox;
+        public bool KundenNummerTextBox
+        {
+            get { return _kundenNummerTextBox; }
+            set
+            {
+                _kundenNummerTextBox = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("KundenNummerTextBox"));
+            }
+        }
         private string _sortieren;
         public string Sortieren
         {
@@ -42,6 +53,16 @@ namespace Projekt_Lug_Trug_AG.ViewModels
             }
         }
 
+        private bool _aendernButton;
+        public bool AendernButton
+        {
+            get { return _aendernButton; }
+            set
+            {
+                _aendernButton = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AendernButton"));
+            }
+        }
 
         private string _kundenSuchen = "";
         public string KundenSuchen
@@ -88,7 +109,6 @@ namespace Projekt_Lug_Trug_AG.ViewModels
                 // Typen.Add(Vorname);
             }
         }
-        // Adresse vlt einzeln Straße ...
 
         private string _adresseKunde;
         public string AdresseKunde
@@ -147,6 +167,8 @@ namespace Projekt_Lug_Trug_AG.ViewModels
             Ansprechpartner = "";
             Telefonnummer = "";
             Aktiv = "";
+            AendernButton = false;
+            KundenNummerTextBox = false;
         }
 
         public void Exit(object o)
@@ -158,10 +180,7 @@ namespace Projekt_Lug_Trug_AG.ViewModels
         {
             Aktion = "Neuer Kunde";
         }
-        public void SortNr(object o)
-        {
-            Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.KundenNummer));
-        }
+
         public void SelectKunde(object o)
         {
             try
@@ -173,6 +192,8 @@ namespace Projekt_Lug_Trug_AG.ViewModels
                 Ansprechpartner = k.Ansprechpartner;
                 Telefonnummer = k.Telefonnummer;
                 Aktiv = k.Aktiv;
+                AendernButton = true;
+                KundenNummerTextBox = true;
 
             }
             catch (System.ArgumentNullException)
@@ -180,6 +201,7 @@ namespace Projekt_Lug_Trug_AG.ViewModels
 
                 MessageBox.Show("Kein Kunde gewählt");
             }
+
         }
 
         public MainVM()
@@ -204,7 +226,8 @@ namespace Projekt_Lug_Trug_AG.ViewModels
                     };
                     Kundenverwaltung.Instance.AddKunde(p);
                     Kunden.Add(p);
-                    Kundenverwaltung.Instance.Save();
+                    Kundenverwaltung.Instance.Save(p);
+                    Cancel(o);
                 }
                 else if (vorhanden != null)
                 {
@@ -226,14 +249,14 @@ namespace Projekt_Lug_Trug_AG.ViewModels
 
             SearchCommand = new RelayCommand((o) =>
             {
-                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().FindAll(k => k.NameFirma.ToLower().Contains(KundenSuchen.ToLower())));
+                Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().FindAll(k => k.NameFirma.ToLower().Contains(KundenSuchen.ToLower())));
             });
 
             SortCommand = new RelayCommand((o) =>
             {
                 if (Sortieren == "Zustand sortieren")
                 {
-                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.Aktiv));
+                    Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.Aktiv)); //.OrderBy(u => u.KundenNummer));
                     Sortieren = "Nummer sortieren";
                 }
                 else if (Sortieren == "Nummer sortieren")
@@ -269,9 +292,9 @@ namespace Projekt_Lug_Trug_AG.ViewModels
                             Aktiv = Aktiv
                         };
                         Kundenverwaltung.Instance.AddKunde(p);
-                        Kunden.Add(p);
-                        Kundenverwaltung.Instance.Save();
+                        Kundenverwaltung.Instance.Change(p);
                         Kunden = new ObservableCollection<Kunde>(Kundenverwaltung.Instance.GetKunden().OrderBy(k => k.KundenNummer));
+                        Cancel(o);
                     }
                     else if (NameFirma == null)
                     {

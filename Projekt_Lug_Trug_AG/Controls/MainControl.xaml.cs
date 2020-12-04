@@ -24,7 +24,7 @@ namespace Projekt_Lug_Trug_AG.Controls
     {
         public MainControl()
         {
-            DataContext = new MainVM();
+            //DataContext = new MainVM();
             InitializeComponent();            
 
         }
